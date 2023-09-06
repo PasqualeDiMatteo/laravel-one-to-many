@@ -32,13 +32,28 @@
                 alt="preview" class="img-fluid" id="preview">
         </div>
     </div>
-    <div class="col-12">
+    <div class="col-6">
         <div class="mb-3">
             <label for="url" class="form-label">Link Progetto</label>
             <input type="url" class="form-control @error('url') is-invalid @enderror" id="url" name="url"
                 value="{{ old('url', $project->url) }}">
             <div class="invalid-feedback">
                 {{ $errors->first('url') }}
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="mb-3">
+            <label for="type" class="form-label">Tipo</label>
+            <select class="form-select @error('type_id') is-invalid @enderror" id="type" name="type_id">
+                <option selected>Nessuno</option>
+                @foreach ($types as $type)
+                    <option value="{{ $type->id }}" @if (old('type_id', $project->type_id) == $type->id) selected @endif>
+                        {{ $type->label }}</option>
+                @endforeach
+            </select>
+            <div class="invalid-feedback">
+                {{ $errors->first('type_id') }}
             </div>
         </div>
     </div>
@@ -52,6 +67,7 @@
             </div>
         </div>
     </div>
+
     <div class="col-12 d-flex justify-content-end mt-3">
         <button type="reset" class="btn btn-primary me-2">Reset</button>
         <button class="btn btn-success">Aggiungi</button>

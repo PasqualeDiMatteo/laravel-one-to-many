@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Type;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -18,6 +19,7 @@ class ProjectController extends Controller
     {
         //
         $projects = Project::paginate(5);
+
         return view('admin.projects.index', compact("projects"));
     }
 
@@ -28,7 +30,8 @@ class ProjectController extends Controller
     {
         //
         $project = new Project();
-        return view("admin.projects.create", compact("project"));
+        $types = Type::all();
+        return view("admin.projects.create", compact("project", "types"));
     }
 
     /**
@@ -39,6 +42,7 @@ class ProjectController extends Controller
         //
         $request->validate([
             'title' => 'required|unique:projects|string',
+            "type_id" => "nullable|exists:types,id",
             'url' => 'required|unique:projects|url:http,https',
             'image' => 'image|nullable',
             'description' => 'string|nullable',
@@ -48,7 +52,8 @@ class ProjectController extends Controller
             "url.required" => "Il link è mancante",
             "url.unique" => "Il link esiste già",
             "url.url" => "Il link è sbagliato",
-            "image.image" => "Il file non è un immagine"
+            "image.image" => "Il file non è un immagine",
+            "type_id.exists" => "Il tipo inserito non esiste"
         ]);
         $new_project = new Project();
 
@@ -58,6 +63,7 @@ class ProjectController extends Controller
         }
         $new_project->title = $request->title;
         $new_project->url = $request->url;
+        $new_project->type_id = $request->type_id;
         $new_project->description = $request->description;
         $new_project->save();
         return to_route("admin.projects.index")->with('type', 'create')->with('message', 'Progetto creato con successo')->with('alert', 'success');
@@ -78,7 +84,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         //
-        return view("admin.projects.edit", compact("project"));
+        $types = Type::all();
+        return view("admin.projects.edit", compact("project", "types"));
     }
 
     /**
@@ -92,13 +99,15 @@ class ProjectController extends Controller
             'url' =>  ["required", "url:http,https", Rule::unique("projects")->ignore($project->id)],
             'image' => 'image|nullable',
             'description' => 'string|nullable',
+            "type_id" => "nullable|exists:types,id",
         ], [
             "title.required" => "Il titolo è mancante",
             "title.unique" => "Il titolo esiste già",
             "url.required" => "Il link è mancante",
             "url.unique" => "Il link esiste già",
             "url.url" => "Il link è sbagliato",
-            "image.image" => "Il file non è un immagine"
+            "image.image" => "Il file non è un immagine",
+            "type_id.exists" => "Il tipo inserito non esiste"
         ]);
 
         if (Arr::exists($request, "image")) {
@@ -108,6 +117,7 @@ class ProjectController extends Controller
         }
 
         $project->title = $request->title;
+        $project->type_id = $request->type_id;
         $project->url = $request->url;
         $project->description = $request->description;
         $project->save();
