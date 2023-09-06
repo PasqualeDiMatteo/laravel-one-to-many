@@ -3,6 +3,7 @@
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\TypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,11 +23,40 @@ Route::get('/', [HomeController::class, "index"])->name("guest.index");
 // Route Admin
 Route::prefix("/admin")->middleware(["auth"])->name("admin.")->group(function () {
 
+    // Projects
+
+    // Trash
     Route::get("/projects/trash", [ProjectController::class, "trash"])->name("projects.trash");
+
+    // Restore
     Route::patch("/projects/{project}/restore", [ProjectController::class, "restore"])->name("projects.restore");
+
+    // Drop All
     Route::delete("/projects/drop-all", [ProjectController::class, "dropAll"])->name("projects.dropAll");
+
+    // Drop
     Route::delete("/projects/{project}/drop", [ProjectController::class, "drop"])->name("projects.drop");
-    Route::resource("projects", ProjectController::class);
+
+    // Resource
+    Route::resource("/projects", ProjectController::class);
+
+
+    // Types
+
+    // Trash
+    Route::get("/types/trash", [TypeController::class, "trash"])->name("types.trash");
+
+    // Restore
+    Route::patch("/types/{type}/restore", [TypeController::class, "restore"])->name("types.restore");
+
+    // Drop All
+    Route::delete("/types/drop-all", [TypeController::class, "dropAll"])->name("types.dropAll");
+
+    // Drop
+    Route::delete("/types/{type}/drop", [TypeController::class, "drop"])->name("types.drop");
+
+    // Resource
+    Route::resource("types", TypeController::class);
 });
 
 
