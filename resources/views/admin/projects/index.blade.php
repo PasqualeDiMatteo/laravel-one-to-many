@@ -15,6 +15,7 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Titolo</th>
+                    <th scope="col">Tipo</th>
                     <th scope="col">Link</th>
                     <th scope="col">Data Creazione</th>
                     <th scope="col">Data Ultima Modifica</th>
@@ -26,6 +27,9 @@
                     <tr>
                         <th scope="row" class="align-middle">{{ $project->id }}</th>
                         <td class="align-middle">{{ $project->title }}</td>
+                        <td class="align-middle"><span
+                                class="badge"style="background:{{ $project->type->color }}">{{ $project->type->label }}</span>
+                        </td>
                         <td class="align-middle"><a href="{{ $project->url }}">Apri in GitHub</a></td>
                         <td class="align-middle">{{ $project->created_at }}</td>
                         <td class="align-middle">{{ $project->updated_at }}</td>
@@ -43,9 +47,10 @@
                             </div>
                         </td>
                     </tr>
-
                 @empty
-                    <h3>Non ci sono progetti</h3>
+                    <td colspan="7">
+                        <h3>Non ci sono progetti</h3>
+                    </td>
                 @endforelse
             </tbody>
         </table>
